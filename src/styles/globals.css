@@ -1,0 +1,78 @@
+@import "tailwindcss";
+@import "swiper/css";
+@import "swiper/css/thumbs";
+html {
+  font-family: "Roboto Condensed", sans-serif;
+  scroll-behavior: smooth;
+}
+/* container fade */
+
+.testimonial-slider {
+  padding: 32px 0;
+  margin-bottom: 20px;
+
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 75%,
+    rgba(0, 0, 0, 0.45) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 75%,
+    rgba(0, 0, 0, 0.45) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* slide divider */
+
+.testimonial-slide {
+  position: relative;
+}
+
+.testimonial-slide:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+
+  right: 0;
+  top: 25%;
+  bottom: 25%;
+
+  width: 1.2px;
+
+  background: #6b6b6b;
+}
+
+/* card */
+
+.testimonial-card {
+  height: 100%;
+
+  min-height: 240px;
+
+  padding: 20px 18px;
+
+  border-radius: 16px;
+
+  background: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  transition: all 0.3s ease;
+}
+
+/* Animation */
+@keyframes softPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
