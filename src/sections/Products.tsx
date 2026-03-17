@@ -1,10 +1,44 @@
+"use client";
+
 import Image from "next/image";
 import { FiArrowRight } from "react-icons/fi";
-import { products } from "@/data/products";
+import { useEffect, useState } from "react";
+
+import { products as fallbackProducts } from "@/data/products";
 import type { Product } from "@/data/products";
 
 function Products() {
   const LINK_MORE = "";
+
+  const [products, setProducts] = useState<Product[]>(fallbackProducts);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products");
+
+        if (!res.ok) throw new Error();
+
+        const data: Product[] = await res.json();
+
+        // format lại giá (API trả number)
+        const formatted = data.map((p) => ({
+          ...p,
+          price: p.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."),
+        }));
+
+        setProducts(formatted);
+      } catch {
+        // fallback giữ nguyên data tĩnh
+        console.warn("Dùng fallback products");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <section id="products" className="py-12">
@@ -20,7 +54,7 @@ function Products() {
 
         {/* Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-1 md:gap-10">
-          {products.map((product: Product) => (
+          {products.map((product) => (
             <div
               key={product.id}
               className="rounded-2xl overflow-hidden bg-cover bg-center text-center"
@@ -39,7 +73,6 @@ function Products() {
 
               {/* Content */}
               <div className="p-3 md:p-6">
-
                 <h3 className="text-base md:text-4xl font-semibold text-[#673200] capitalize mb-1 md:mb-2">
                   {product.name}
                 </h3>
@@ -61,8 +94,7 @@ function Products() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <button
-                    className="bg-[#F0A523] hover:bg-[#D8941E]
+                  <button className="bg-[#F0A523] hover:bg-[#D8941E]
                     text-white text-xs md:text-lg
                     px-5 md:px-10 py-1.5 md:py-3
                     rounded-full font-semibold
@@ -74,7 +106,6 @@ function Products() {
                     Mua ngay
                   </button>
                 </a>
-
               </div>
             </div>
           ))}

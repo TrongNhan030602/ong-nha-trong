@@ -1,15 +1,43 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+export function middleware(req: NextRequest) {
+  const isAdmin = req.nextUrl.pathname.startsWith("/admin");
+  if (!isAdmin) return NextResponse.next();
 
-  // ví dụ: logging
-  console.log("Request:", request.nextUrl.pathname);
+  const authHeader = req.headers.get("authorization");
 
-  return response;
+  if (!authHeader || !authHeader.startsWith("Basic ")) {
+    return unauthorized();
+  }
+
+  try {
+    const base64 = authHeader.split(" ")[1];
+    const decoded = atob(base64);
+    const [username, password] = decoded.split(":");
+
+    if (
+      username === process.env.ADMIN_USER &&
+      password === process.env.ADMIN_PASS
+    ) {
+      return NextResponse.next();
+    }
+  } catch {
+    // lỗi decode → reject luôn
+  }
+
+  return unauthorized();
+}
+
+function unauthorized() {
+  return new Response("Unauthorized", {
+    status: 401,
+    headers: {
+      "WWW-Authenticate": 'Basic realm="Admin Area"',
+    },
+  });
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico).*)"],
+  matcher: ["/admin/:path*"],
 };
