@@ -24,7 +24,7 @@ const robotoCondensed = Roboto_Condensed({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ong-nha-trong.design24.vn"),
+  metadataBase: new URL("https://ongnhatrong.vn"),
 
   title: appConfig.name,
   description: appConfig.description,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: appConfig.name,
     description: appConfig.description,
-    url: "https://ong-nha-trong.design24.vn",
+    url: "https://ongnhatrong.vn",
     siteName: appConfig.name,
     locale: "vi_VN",
     type: "website",
