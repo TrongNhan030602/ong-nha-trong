@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/assets/og-image.png",
+        url: "https://ongnhatrong.vn/assets/og-image.png",
         width: 1200,
         height: 630,
       },
