@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const isAdmin = req.nextUrl.pathname.startsWith("/admin");
-  if (!isAdmin) return NextResponse.next();
+
+  if (!isAdmin) {
+    return NextResponse.next();
+  }
 
   const authHeader = req.headers.get("authorization");
 
@@ -14,6 +17,7 @@ export function middleware(req: NextRequest) {
   try {
     const base64 = authHeader.split(" ")[1];
     const decoded = atob(base64);
+
     const [username, password] = decoded.split(":");
 
     if (
@@ -23,7 +27,7 @@ export function middleware(req: NextRequest) {
       return NextResponse.next();
     }
   } catch {
-    // lỗi decode → reject luôn
+    // decode lỗi
   }
 
   return unauthorized();
