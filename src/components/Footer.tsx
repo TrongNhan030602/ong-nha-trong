@@ -9,9 +9,9 @@ function Footer() {
       {/* Row 1 */}
       <div className="bg-[#3A2A1A] pt-14 pb-12">
         <div className="max-w-[1080px] mx-auto px-4">
-          <div className="grid md:grid-cols-[1.3fr_1fr_1fr] gap-10">
+          <div className="grid grid-cols-2 md:grid-cols-[1.3fr_1fr_1fr_220px] gap-10">
             {/* Column 1 */}
-            <div className="space-y-6">
+            <div className="space-y-6 col-span-2 md:col-span-1">
               {/* Logo */}
               <div className="flex items-center gap-3">
                 <Image
@@ -21,6 +21,7 @@ function Footer() {
                   height={48}
                   className="object-contain"
                 />
+
                 <span className="text-2xl font-bold uppercase">
                   Ong nhà Trọng
                 </span>
@@ -37,6 +38,7 @@ function Footer() {
                 hover:bg-[#f4f4f4]"
               >
                 <FaFacebook />
+
                 <span className="uppercase font-medium">
                   Follow us on Facebook
                 </span>
@@ -54,6 +56,7 @@ function Footer() {
                 hover:bg-[#f4f4f4]"
               >
                 <FaPhoneAlt />
+
                 <span className="uppercase font-medium">
                   Hotline: 0931035448 - 0907727890
                 </span>
@@ -107,7 +110,9 @@ function Footer() {
 
             {/* Column 3 */}
             <div>
-              <h3 className="text-lg font-bold mb-5 text-[#C98B2F]">Hỗ trợ</h3>
+              <h3 className="text-lg font-bold mb-5 text-[#C98B2F]">
+                Hỗ trợ
+              </h3>
 
               <ul className="space-y-4 text-[#F6B73C] text-sm">
                 <li>
@@ -146,6 +151,29 @@ function Footer() {
                   </a>
                 </li>
               </ul>
+            </div>
+
+            {/* Column 4 - Video */}
+            <div className="flex justify-start md:justify-center col-span-2 md:col-span-1">
+              <div
+                className="relative overflow-hidden rounded-xl
+                border border-[#C98B2F]/30 bg-black
+                w-full max-w-[220px] md:w-[220px]
+                aspect-video shadow-xl"
+              >
+                <video
+                  controls
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-cover"
+                >
+                  <source
+                    src="/video/video-footer.mp4"
+                    type="video/mp4"
+                  />
+                </video>
+              </div>
             </div>
           </div>
         </div>
