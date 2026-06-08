@@ -1,160 +1,133 @@
-# NextJS Template
+# Ong Nhà Trọng - Premium Honey Landing Page
 
-Template frontend sử dụng **NextJS + TypeScript + TailwindCSS + Redux Toolkit**.
-Mục đích: làm base project để phát triển nhanh các hệ thống web (landing page, dashboard, ecommerce, SaaS…).
+[![Next.js](https://img.shields.io/badge/Next.js-15+-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+[![Deploy](https://img.shields.io/badge/Deploy-PM2%20%7C%20Apache-green)]()
 
----
+> **Live Production:** [https://ongnhatrong.vn/](https://ongnhatrong.vn/)
+> **Repository:** [https://github.com/TrongNhan030602/ong-nha-trong](https://github.com/TrongNhan030602/ong-nha-trong)
 
-# Yêu cầu môi trường
+## Overview
 
-- NodeJS **>=18**
-- npm hoặc yarn
+An enterprise-grade, high-performance Landing Page engineered for **Ong Nhà Trọng**, a premium brand specializing in high-quality honey products. This platform serves as the digital storefront, designed to seamlessly communicate the brand story, highlight product purity, and drive direct customer conversions.
 
-Kiểm tra:
+Built entirely on the Next.js Server Components architecture, the system is strictly optimized for Technical SEO and maximum score on Core Web Vitals. For a product-focused landing page, lightning-fast initial page loads and immaculate image optimization are critical components of the conversion funnel.
 
-```bash
-node -v
-npm -v
-```
+## Core Architecture & Features
 
----
+- **Next.js App Router (SSR/SSG):** Utilizes React Server Components to pre-render static content, guaranteeing near-zero Layout Shift (CLS) and rapid First Contentful Paint (FCP) – essential metrics for e-commerce SEO.
+- **Advanced Media Optimization:** Deep integration of `next/image` to serve modern formats (WebP/AVIF) for high-resolution product photography without bloating payload sizes.
+- **Conversion-Optimized UI/UX:** Strategic placement of Call-to-Action (CTA) sections, trust signals, and responsive product displays built with utility-first Tailwind CSS.
+- **Strict Type Safety:** 100% TypeScript coverage with `strict: true`. All product data interfaces, component props, and state are strictly typed to eliminate runtime errors.
 
-# Cài đặt project
+## Tech Stack
 
-Clone project và cài dependency:
+- **Frontend:** Next.js 15+ (App Router), React 19+
+- **Language:** TypeScript (Strict)
+- **Styling:** Tailwind CSS
+- **Infrastructure / Ops:** Linux VPS, PM2 (Daemon/Process Management), Apache (Reverse Proxy)
 
-```bash
-npm install
-```
+## Local Development Setup
 
----
+### Prerequisites
+- Node.js (v20+ strictly recommended)
+- npm, yarn, or pnpm
 
-# Chạy môi trường development
+### Installation
 
-```bash
-npm run dev
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/TrongNhan030602/ong-nha-trong.git
+   cd ong-nha-trong
+   ```
 
-Sau đó mở trình duyệt:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```
-http://localhost:3000
-```
+3. Environment Configuration:
+   Create a `.env.local` file in the root directory.
+   ```env
+   # API Endpoints / CMS integrations if applicable
+   NEXT_PUBLIC_SITE_URL=https://ongnhatrong.vn
+   NEXT_PUBLIC_CONTACT_API_ENDPOINT=/api/contact
+   ```
 
-Server sẽ **auto reload khi sửa code**.
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   *The application will boot at `http://localhost:3000`.*
 
----
+## Production Deployment (VPS / PM2 / Apache)
 
-# Kiểm tra code
+In accordance with strict infrastructure policies, this platform is hosted on a Linux VPS utilizing PM2 for continuous process management and Apache acting as the Reverse Proxy. **Nginx is strictly prohibited.**
 
-### Kiểm tra lint
-
-```bash
-npm run lint
-```
-
-### Format code tự động
-
-```bash
-npm run format
-```
-
-### Kiểm tra TypeScript
-
-```bash
-npm run type-check
-```
-
----
-
-# Build production
-
-Build project:
-
+### 1. Build the Application
 ```bash
 npm run build
 ```
 
-Chạy server production:
-
+### 2. Process Management with PM2
+Ensure PM2 is globally installed (`npm install -g pm2`). Start the Next.js production server:
 ```bash
-npm run start
+pm2 start npm --name "ong-nha-trong-fe" -- start
+pm2 save
+pm2 startup
 ```
+
+### 3. Apache Reverse Proxy Configuration
+Configure Apache to securely route external port 80/443 traffic to the internal PM2 process (default Port 3000).
+
+*File: `/etc/apache2/sites-available/ongnhatrong.vn.conf`*
+```apache
+<VirtualHost *:80>
+    ServerName ongnhatrong.vn
+    ServerAlias www.ongnhatrong.vn
+    
+    # Redirect HTTP to HTTPS
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName ongnhatrong.vn
+    ServerAlias www.ongnhatrong.vn
+
+    SSLEngine on
+    SSLCertificateFile /path/to/cert.pem
+    SSLCertificateKeyFile /path/to/privkey.pem
+
+    # Proxy configuration for Next.js
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:3000/
+    ProxyPassReverse / http://127.0.0.1:3000/
+
+    # Handle WebSockets (Critical for Next.js internal routing)
+    RewriteEngine On
+    RewriteCond %{HTTP:Upgrade} =websocket [NC]
+    RewriteRule /(.*)  ws://127.0.0.1:3000/$1 [P,L]
+
+    ErrorLog ${APACHE_LOG_DIR}/ongnhatrong_error.log
+    CustomLog ${APACHE_LOG_DIR}/ongnhatrong_access.log combined
+</VirtualHost>
+```
+
+Enable the necessary Apache modules and reload the service:
+```bash
+sudo a2enmod proxy proxy_http proxy_wstunnel rewrite ssl
+sudo a2ensite ongnhatrong.vn.conf
+sudo systemctl restart apache2
+```
+
+## Strict Coding Guidelines
+
+- **Server-First Execution:** Maximize the use of Server Components. The `'use client'` directive is restricted exclusively to interactive components (e.g., product image galleries, order forms).
+- **Responsive Media:** All product imagery must be optimized via `next/image` with predefined `width` and `height` attributes to prevent Layout Shift.
+- **Semantic HTML:** Ensure structural tags (`<main>`, `<section>`, `<article>`) and proper heading hierarchies are maintained for E-commerce SEO.
 
 ---
-
-# Environment Variables
-
-Tạo file `.env.local` ở root project.
-
-Ví dụ:
-
-```
-NEXT_PUBLIC_API_URL=http://localhost:3001
-```
-
-Các biến bắt đầu bằng `NEXT_PUBLIC_` sẽ được sử dụng ở frontend.
-
----
-
-# Deploy VPS (NodeJS)
-
-Build project:
-
-```bash
-npm run build
-```
-
-Chạy production server:
-
-```bash
-npm run start
-```
-
-Project mặc định chạy tại:
-
-```
-http://localhost:3000
-```
-
-Nếu deploy trên VPS nên dùng **process manager** như PM2 để giữ server luôn chạy.
-
-Cài PM2:
-
-```bash
-npm install -g pm2
-```
-
-Chạy app:
-
-```bash
-pm2 start npm --name "next-app" -- start
-```
-
----
-
-# Stack công nghệ
-
-- NextJS (App Router)
-- React
-- TypeScript
-- TailwindCSS
-- Redux Toolkit
-- React Toastify
-
----
-
-# Cấu trúc thư mục chính
-
-```
-src
- ├ app           # routing và layout
- ├ components    # UI components
- ├ config        # cấu hình app
- ├ constants     # constant dùng chung
- ├ hooks         # custom hooks
- ├ lib           # redux store
- ├ services      # API services
- ├ types         # TypeScript types
- └ utils         # helper functions
-```
+*Maintained by the Technical Team.*
